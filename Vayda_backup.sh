@@ -20,8 +20,9 @@
 
 #  Note: you can use the $HOME variable in bash like this $HOME/BACKUP_FILES
 
-echo "Created BACKUP_FILES in $HOME directory"
-echo "Directory $HOME/BACKUP_FILES exists."
+[ -d "/$HOME/BACKUP_FILES" ] && echo "Directory $HOME/BACKUP_FILES exists."
+[ ! -d "/$HOME/BACKUP_FILES" ] && cd $HOME  && mkdir BACKUP_FILES && echo "Created BACKUP_FILES in $HOME directory"
+
 
 
 #Part 2: Write a for loop that copies all the files of a directory into BACKUP_FILES
@@ -30,7 +31,12 @@ echo "Directory $HOME/BACKUP_FILES exists."
 #  Hint: see the script 'convert_html_to_php.sh' at:
 #     https://ryanstutorials.net/bash-scripting-tutorial/bash-loops.php
 
-#echo "$fn copied to $HOME/BACKUP_FILES"
+
+for FILE in $1/*
+do
+	cp $FILE /$HOME/BACKUP_FILES
+	echo "$FILE copied to $HOME/BACKUP_FILES"
+done
 
 
 #Part 3: Create a function called print_info that
@@ -46,7 +52,11 @@ echo "Directory $HOME/BACKUP_FILES exists."
 
 
 print_info () {
+	ls -al $HOME/BACKUP_FILES
+	du -sh $HOME/BACKUP_FILES
 }
+
+print_info
 
 #####THE OUTPUT SHOULD BE SOMETHING LIKE THIS#####
 # if TMP has 3 files, then

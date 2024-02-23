@@ -29,16 +29,18 @@ echo $fn
 ###     The other problem is that it works on the wrong file. Change it so that it works with the user input file (see echo above) (hint: how do you call variables in AWK commands???).
 ###     Change these things and you should get 3 to 4 output files starting with 'myseq'
 
-#awk 'BEGIN {n_seq=0;} /^>/ {if(n_seq%1000==0){file=sprintf("myseq%d.fa",n_seq);} print >> file; n_seq++; next;} { print > file; }' sequences.fna
+awk 'BEGIN {n_seq=0;} /^>/ {if(n_seq%50000==0){file=sprintf("myseq%d.fna",n_seq);} print >> file; n_seq++; next;} { print > file; }' $fn
 
 
 ### (4) Use grep to check how many fasta sequences are in all of the .fna files and redirect this to a file in RAW_DATA called 'log.txt'
 ###     Hints on grep: -c counts and you can grep multiple files at once using the *. 
 
+grep -c myseq*.fna > log.txt
 
 
 ### (5) Print the output of log.txt to the terminal 
 
+cat log.txt
 
 
 ### (6) Below is a for loop and an awk script. The for loop below cycles though every file in the current directory and prints them.
@@ -49,12 +51,13 @@ echo $fn
 
 ### More information on for loops can be found at: https://www.cyberciti.biz/faq/bash-loop-over-file/
 
-for f in my*fna
+for f in my*.fna
 do
     echo $f
+	awk 'BEGIN{RS=">"}{gsub("\n","",$0); print ">"$0}' myseq*.fna > myseq*.fna.txt
 done
 
-#awk 'BEGIN{RS=">"}{gsub("\n","",$0); print ">"$0}' myseq50000.fna > myseq50000.fna.txt
+###awk 'BEGIN{RS=">"}{gsub("\n","",$0); print ">"$0}' myseq50000.fna > myseq50000.fna.txt
 
 
 ### (7) Use a for loop to count all the instances of the following string in all of the .fna.txt files:
@@ -62,21 +65,30 @@ done
 ###     Also, like in (4) have the grep results for all files appended to log.txt (DON'T OVERWRITE IT)
 ###       then show the contents of log.txt in the terminal
 
-for fn in my*fna.txt
+for fn in my*.fna.txt
 do
+	grep -c CACCCTCTCAGGTCGGCTACGCATCGTCGCC my*fna.txt
     echo $fn >> log.txt
 done
 
+cat log.txt
 
 ### (8) Move all the .fna.txt files to the directory ~/P_DATA
 
-
+for fn in my*fna.txt
+do
+	mv $fn ~/P_DATA
+done
 
 ### (9) Make a tar archive of the files in P_DATA - call it pdata.tar
 
+tar cfP pdata.tar ~/P_DATA
 
 
 ### (10) Compress pdata.tar
+
+gzip pdata.tar
+
 
 
 
